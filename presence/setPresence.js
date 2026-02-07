@@ -10,7 +10,6 @@ function setPresence(client, channelId) {
     const messages = [
         () => `en ${client.guilds.cache.size} servidor${client.guilds.cache.size !== 1 ? 'es' : ''}`,
         () => 'usa /help para ver mis comandos',
-        () => '/info para más información',
         () => '¡Disfruta de mi funcionalidad!',
     ];
 
