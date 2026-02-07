@@ -2,7 +2,9 @@ const { Client, GatewayIntentBits, Collection } = require('discord.js');
 const fs = require('fs');
 const { setPresence } = require('./presence/setPresence');
 
-// Creamos el cliente con todos los intents necesarios
+// ======================
+// CREAR CLIENTE
+// ======================
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -28,8 +30,9 @@ for (const file of commandFiles) {
 client.once('ready', () => {
     console.log(`✅ Bot conectado como ${client.user.tag}`);
 
-    // Llamamos al estado de presencia
-    setPresence(client);
+    // Llamamos a la función de presencia dinámica
+    // Opcional: pasa el ID de un canal para enviar el embed al iniciar
+    setPresence(client, 'TU_CANAL_ID'); 
 });
 
 // ======================
