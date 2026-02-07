@@ -19,7 +19,7 @@ function setPresence(client, channelId) {
             activities: [
                 {
                     name: activityMessage,
-                    type: ActivityType.Watching // Cambia a Listening, Watching, Competing si quieres
+                    type: ActivityType.Playing // Cambia a Listening, Watching, Competing si quieres
                 }
             ],
             status: 'online'
