@@ -9,8 +9,9 @@ function setPresence(client, channelId) {
     // Mensajes rotativos para la presencia
     const messages = [
         () => `en ${client.guilds.cache.size} servidor${client.guilds.cache.size !== 1 ? 'es' : ''}`,
-        () => 'usa /ping para probarme 🏓',
-        () => 'desarrollada por ♱ - Parra'
+        () => 'usa /help para ver mis comandos',
+        () => '/info para más información',
+        () => '¡Disfruta de mi funcionalidad!',
     ];
 
     // Función para actualizar la presencia
