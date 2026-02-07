@@ -36,17 +36,17 @@ module.exports = {
       new ButtonBuilder()
         .setCustomId('help_mod')
         .setLabel('🔩 Moderación')
-        .setStyle(ButtonStyle.Danger),
+        .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
         .setCustomId('help_utils')
         .setLabel('🔎 Utilidad')
-        .setStyle(ButtonStyle.Secondary),
+        .setStyle(ButtonStyle.Primary),
 
       new ButtonBuilder()
         .setCustomId('help_music')
         .setLabel('📀 Música')
-        .setStyle(ButtonStyle.Success)
+        .setStyle(ButtonStyle.Primary)
     );
 
     await interaction.reply({ embeds: [embed], components: [row] });
