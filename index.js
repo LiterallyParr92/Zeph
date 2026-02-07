@@ -1,13 +1,18 @@
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
 const { setPresence } = require("./presence/setPresence");
-const inactivitySystem = require("./inactivitysystem"); // 👈 AÑADIDO
+const inactivitySystem = require("./inactivitySystem"); // ⚠️ respeta mayúsculas
 
 // ======================
 // CREAR CLIENTE
 // ======================
 const client = new Client({
-  intents: [53608447], // Todos los intents necesarios
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers, // necesario para kick
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 });
 
 // ======================
@@ -30,12 +35,12 @@ client.once("ready", () => {
   // Presencia dinámica
   setPresence(client, "TU_CANAL_ID");
 
-  // 🔥 Sistema de inactividad
+  // Sistema de inactividad
   inactivitySystem(client);
 });
 
 // ======================
-// ESCUCHAR INTERACCIONES
+// INTERACCIONES SLASH
 // ======================
 client.on("interactionCreate", async (interaction) => {
   if (!interaction.isChatInputCommand()) return;
@@ -44,16 +49,15 @@ client.on("interactionCreate", async (interaction) => {
   if (!command) return;
 
   try {
-    if (!interaction.replied && !interaction.deferred) {
-      await interaction.deferReply({ ephemeral: true });
-    }
-
     await command.execute(interaction, client);
   } catch (error) {
     console.error("❌ Error al ejecutar comando:", error);
 
     if (!interaction.replied && !interaction.deferred) {
-      await interaction.reply({ content: "❌ Error al ejecutar el comando", ephemeral: true });
+      await interaction.reply({
+        content: "❌ Error al ejecutar el comando",
+        ephemeral: true
+      });
     }
   }
 });
