@@ -1,4 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { 
+  SlashCommandBuilder, 
+  EmbedBuilder, 
+  ActionRowBuilder, 
+  ButtonBuilder, 
+  ButtonStyle 
+} = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -12,14 +18,38 @@ module.exports = {
       .setColor('#5990A8')
       .setDescription('Aquí tienes la lista de comandos disponibles:')
       .addFields(
-        { name: '🎊 | entretenimiento', value: 'Muestra la lista de los comandos de entretenimiento' },
-        { name: '🔩 | moderación', value: 'Muestra la lista de los comandos de moderación' },
-        { name: '🔎 | utilidad', value: 'Muestra la lista de los comandos de utilidad' },
-        { name: '📀 | música', value: 'Muestra la lista de los comandos de música' },
+        { name: '🎊 | entretenimiento', value: 'Comandos de diversión' },
+        { name: '🔩 | moderación', value: 'Comandos de staff' },
+        { name: '🔎 | utilidad', value: 'Comandos útiles' },
+        { name: '📀 | música', value: 'Comandos de música' },
       )
       .setImage('https://i.pinimg.com/736x/6e/42/b0/6e42b0b441db7ff53d8ac0595f03a223.jpg')
       .setFooter({ text: 'Zeph • desarrollada por ♱ - Parra' });
 
-    await interaction.reply({ embeds: [embed] });
+    // BOTONES
+    const row = new ActionRowBuilder().addComponents(
+      new ButtonBuilder()
+        .setCustomId('help_fun')
+        .setLabel('🎊 Entretenimiento')
+        .setStyle(ButtonStyle.Primary),
+
+      new ButtonBuilder()
+        .setCustomId('help_mod')
+        .setLabel('🔩 Moderación')
+        .setStyle(ButtonStyle.Danger),
+
+      new ButtonBuilder()
+        .setCustomId('help_utils')
+        .setLabel('🔎 Utilidad')
+        .setStyle(ButtonStyle.Secondary),
+
+      new ButtonBuilder()
+        .setCustomId('help_music')
+        .setLabel('📀 Música')
+        .setStyle(ButtonStyle.Success)
+    );
+
+    await interaction.reply({ embeds: [embed], components: [row] });
   }
 };
+
