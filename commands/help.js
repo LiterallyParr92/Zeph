@@ -4,6 +4,22 @@ const {
   ActionRowBuilder,
   StringSelectMenuBuilder
 } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
+
+const commandsPath = path.join(__dirname, '../'); // ajusta ruta
+const categories = fs.readdirSync(commandsPath);
+
+let totalCommands = 0;
+
+for (const category of categories) {
+  const files = fs.readdirSync(`${commandsPath}/${category}`)
+    .filter(file => file.endsWith('.js'));
+  totalCommands += files.length;
+}
+
+const totalCategories = categories.length;
+
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -13,14 +29,14 @@ module.exports = {
   async execute(interaction) {
 
     const embed = new EmbedBuilder()
-      .setTitle('📖 Menú de ayuda')
-      .setColor('#2b2d31')
-      .setDescription('Selecciona una categoría en el menú desplegable 👇')
+      .setTitle('📖 | Menú de ayuda')
+      .setColor('#313e59')
+      .setDescription(`Tengo **${totalCategories} categorías** y **${totalCommands} comandos** disponibles. Selecciona una categoría para ver sus comandos.`)
       .setFooter({ text: 'Zeph • desarrollada por ♱ - Parra' });
 
     const menu = new StringSelectMenuBuilder()
       .setCustomId('help_menu')
-      .setPlaceholder('📂 Selecciona una categoría')
+      .setPlaceholder('Categorías')
       .addOptions([
         {
           label: '🎊 Entretenimiento',
