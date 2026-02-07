@@ -5,17 +5,21 @@ const { ActivityType } = require('discord.js');
  * @param {Client} client - instancia del bot
  */
 function setPresence(client) {
+    // Construimos el mensaje de actividad
+    const serverCount = client.guilds.cache.size; // número de servidores
+    const activityMessage = `en ${serverCount} servidor${serverCount !== 1 ? 'es' : ''}`;
+
     client.user.setPresence({
         activities: [
             {
-                name: "tu servidor de Discord", // mensaje de actividad
-                type: ActivityType.Playing,    // Jugando
+                name: activityMessage,        // mensaje dinámico
+                type: ActivityType.Playing,   // 0 = Jugando
             }
         ],
-        status: 'online' // estados posibles: 'online', 'idle', 'dnd', 'invisible'
+        status: 'online' // online, idle, dnd, invisible
     });
 
-    console.log(`✅ Presencia del bot establecida.`);
+    console.log(`✅ Presencia del bot establecida: ${activityMessage}`);
 }
 
 module.exports = { setPresence };
