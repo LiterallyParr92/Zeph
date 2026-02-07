@@ -1,55 +1,53 @@
-const { 
-  SlashCommandBuilder, 
-  EmbedBuilder, 
-  ActionRowBuilder, 
-  ButtonBuilder, 
-  ButtonStyle 
+const {
+  SlashCommandBuilder,
+  EmbedBuilder,
+  ActionRowBuilder,
+  StringSelectMenuBuilder
 } = require('discord.js');
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('help')
-    .setDescription('💡 | Muestra la lista de comandos disponibles'),
+    .setDescription('💡 | Muestra el menú de ayuda'),
 
   async execute(interaction) {
 
     const embed = new EmbedBuilder()
-      .setTitle('📖 | Comandos del bot')
-      .setColor('#5990A8')
-      .setDescription('Aquí tienes la lista de comandos disponibles:')
-      .addFields(
-        { name: '🎊 | entretenimiento', value: 'Comandos de diversión' },
-        { name: '🔩 | moderación', value: 'Comandos de staff' },
-        { name: '🔎 | utilidad', value: 'Comandos útiles' },
-        { name: '📀 | música', value: 'Comandos de música' },
-      )
-      .setImage('https://i.pinimg.com/736x/6e/42/b0/6e42b0b441db7ff53d8ac0595f03a223.jpg')
+      .setTitle('📖 Menú de ayuda')
+      .setColor('#2b2d31')
+      .setDescription('Selecciona una categoría en el menú desplegable 👇')
       .setFooter({ text: 'Zeph • desarrollada por ♱ - Parra' });
 
-    // BOTONES
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder()
-        .setCustomId('help_fun')
-        .setLabel('🎊 Entretenimiento')
-        .setStyle(ButtonStyle.Primary),
+    const menu = new StringSelectMenuBuilder()
+      .setCustomId('help_menu')
+      .setPlaceholder('📂 Selecciona una categoría')
+      .addOptions([
+        {
+          label: '🎊 Entretenimiento',
+          description: 'Comandos de Entretenimiento',
+          value: 'fun',
+        },
+        {
+          label: '🔩 Moderación',
+          description: 'Comandos de moderación',
+          value: 'mod',
+        },
+        {
+          label: '🔎 Utilidad',
+          description: 'Comandos útiles',
+          value: 'utils',
+        },
+        {
+          label: '📀 Música',
+          description: 'Comandos de música',
+          value: 'music',
+        },
+      ]);
 
-      new ButtonBuilder()
-        .setCustomId('help_mod')
-        .setLabel('🔩 Moderación')
-        .setStyle(ButtonStyle.Primary),
-
-      new ButtonBuilder()
-        .setCustomId('help_utils')
-        .setLabel('🔎 Utilidad')
-        .setStyle(ButtonStyle.Primary),
-
-      new ButtonBuilder()
-        .setCustomId('help_music')
-        .setLabel('📀 Música')
-        .setStyle(ButtonStyle.Primary)
-    );
+    const row = new ActionRowBuilder().addComponents(menu);
 
     await interaction.reply({ embeds: [embed], components: [row] });
   }
 };
+
 
