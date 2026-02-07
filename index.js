@@ -30,9 +30,8 @@ for (const file of commandFiles) {
 client.once('ready', () => {
     console.log(`✅ Bot conectado como ${client.user.tag}`);
 
-    // Llamamos a la función de presencia dinámica
-    // Opcional: pasa el ID de un canal para enviar el embed al iniciar
-    setPresence(client, 'TU_CANAL_ID'); 
+    // Presencia dinámica + embed opcional (reemplaza TU_CANAL_ID si quieres embed)
+    setPresence(client, 'TU_CANAL_ID');
 });
 
 // ======================
@@ -45,10 +44,19 @@ client.on('interactionCreate', async (interaction) => {
     if (!command) return;
 
     try {
+        // Si el comando tarda, hacemos deferred reply
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.deferReply({ ephemeral: true }); // temporal y seguro
+        }
+
         await command.execute(interaction, client);
     } catch (error) {
         console.error('❌ Error al ejecutar comando:', error);
-        await interaction.reply({ content: '❌ Error al ejecutar el comando', ephemeral: true });
+
+        // Solo responder si no se ha respondido
+        if (!interaction.replied && !interaction.deferred) {
+            await interaction.reply({ content: '❌ Error al ejecutar el comando', ephemeral: true });
+        }
     }
 });
 
@@ -61,3 +69,4 @@ if (!process.env.TOKEN) {
 }
 
 client.login(process.env.TOKEN);
+
