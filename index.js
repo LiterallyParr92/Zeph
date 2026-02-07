@@ -1,3 +1,4 @@
+require('./deploy-commands.js'); // Asegura que los comandos se desplieguen antes de iniciar el bot
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
 const { setPresence } = require("./presence/setPresence");
