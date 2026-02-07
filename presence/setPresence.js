@@ -31,8 +31,8 @@ function setPresence(client, channelId) {
     // Actualizar inmediatamente al iniciar
     updatePresence();
 
-    // Rotar presencia cada 15 segundos
-    setInterval(updatePresence, 15000);
+    // Rotar presencia cada 60 segundos
+    setInterval(updatePresence, 60000);
 
     // Opcional: enviar embed al canal especificado con imagen
     if (channelId) {
