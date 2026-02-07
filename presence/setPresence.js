@@ -7,9 +7,7 @@ const { ActivityType, EmbedBuilder } = require('discord.js');
  */
 function setPresence(client, channelId) {
     const messages = [
-        () => `en ${client.guilds.cache.size} servidor${client.guilds.cache.size !== 1 ? 'es' : ''}`,
-        () => 'usa /ping para probarme 🏓',
-        () => 'aprendiendo cosas nuevas cada día 😎'
+        () => 'Romanceplanet'
     ];
 
     // Función para actualizar la presencia
@@ -21,7 +19,7 @@ function setPresence(client, channelId) {
             activities: [
                 {
                     name: activityMessage,
-                    type: ActivityType.Playing // Cambia a Listening, Watching, Competing si quieres
+                    type: ActivityType.Listening // Cambia a Listening, Watching, Competing si quieres
                 }
             ],
             status: 'online'
