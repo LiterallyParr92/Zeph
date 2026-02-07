@@ -26,8 +26,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle("📖 | Menú de ayuda")
       .setColor("#2f3136")
-      .setDescription(`Tengo **${totalCategories} categorías** y **${totalCommands} comandos** disponibles.\n\nSelecciona una categoria abajo y según la categoria se mostraran comandos relacionados y sus descripciones.\n\n🎊 | **Entretenimiento**\n🔩 | **Moderación**\n🔎 | **Utilidad**\n🎵 | **Música**`)
-      .setImage("https://i.pinimg.com/736x/6e/42/b0/6e42b0b441db7ff53d8ac0595f03a223.jpg")
+      .setDescription(`Tengo **${totalCategories} categorías** y **${totalCommands} comandos** disponibles.\n\nSelecciona una categoria abajo y según la categoria se mostraran comandos relacionados y sus descripciones.\n\n🎊 | **Entretenimiento**\ncomandos de diversión\n🔩 | **Moderación**\ncomandos de moderación\n🔎 | **Utilidad**\ncomandos útiles\n🎵 | **Música**\ncomandos musicales`)
       .setFooter({ text: "Zeph • desarrollada por ♱ - Parra" })
       .setTimestamp();
 
@@ -62,7 +61,7 @@ module.exports = {
     const deleteButton = new ButtonBuilder()
       .setCustomId("delete_help_msg")
       .setStyle(ButtonStyle.Danger)
-      .setEmoji("❌");
+      .setEmoji("✖");
 
     // Crear dos ActionRows (uno para el menú, otro para el botón)
     const menuRow = new ActionRowBuilder().addComponents(menu);
