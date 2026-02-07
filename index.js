@@ -1,7 +1,7 @@
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
 const { setPresence } = require("./presence/setPresence");
-const inactivitySystem = require("./inactivitySystem"); // ⚠️ respeta mayúsculas
+const inactivitySystem = require("./inactivitysystem"); // ⚠️ respeta mayúsculas
 
 // ======================
 // CREAR CLIENTE
