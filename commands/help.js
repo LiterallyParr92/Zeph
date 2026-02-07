@@ -2,7 +2,9 @@ const {
   SlashCommandBuilder,
   EmbedBuilder,
   ActionRowBuilder,
-  StringSelectMenuBuilder
+  StringSelectMenuBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
@@ -13,7 +15,6 @@ module.exports = {
     .setDescription("Te muestra el menú de ayuda con mis comandos"),
 
   async execute(interaction) {
-
     // 📂 Contar categorías y comandos
     const commandsPath = path.join(__dirname);
     const files = fs.readdirSync(commandsPath).filter(f => f.endsWith(".js"));
@@ -57,9 +58,19 @@ module.exports = {
         },
       ]);
 
-    const row = new ActionRowBuilder().addComponents(menu);
+    // 🔴 Botón rojo para eliminar
+    const deleteButton = new ButtonBuilder()
+      .setCustomId("delete_help_msg")
+      .setStyle(ButtonStyle.Danger)
+      .setEmoji("❌");
 
-    await interaction.reply({ embeds: [embed], components: [row] });
+    // Crear dos ActionRows (uno para el menú, otro para el botón)
+    const menuRow = new ActionRowBuilder().addComponents(menu);
+    const buttonRow = new ActionRowBuilder().addComponents(deleteButton);
+
+    await interaction.reply({ 
+      embeds: [embed], 
+      components: [menuRow, buttonRow] 
+    });
   }
 };
-

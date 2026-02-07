@@ -43,7 +43,13 @@ client.once("ready", () => {
 // ======================
 // INTERACCIONES SLASH
 // ======================
+
 client.on("interactionCreate", async (interaction) => {
+  
+  if (interaction.isButton() && interaction.customId === 'delete_help_msg') {
+    await interaction.message.delete().catch(() => {});
+  }
+  
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);
