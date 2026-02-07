@@ -10,7 +10,7 @@ const path = require("path");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("help")
-    .setDescription("📖 | Menú de ayuda"),
+    .setDescription("Te muestra el menú de ayuda con mis comandos"),
 
   async execute(interaction) {
 
@@ -25,8 +25,7 @@ module.exports = {
     const embed = new EmbedBuilder()
       .setTitle("📖 | Menú de ayuda")
       .setColor("#2f3136")
-      .setDescription(`Tengo **${totalCategories} categorías** y **${totalCommands} comandos** disponibles.\nSelecciona una categoría abajo 👇`)
-      .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true }))
+      .setDescription(`Tengo **${totalCategories} categorías** y **${totalCommands} comandos** disponibles.\nSelecciona una categoria abajo y según la categoria se mostraran comandos relacionados y sus descripciones.`)
       .setFooter({ text: "Zeph • desarrollada por ♱ - Parra" })
       .setTimestamp();
 
