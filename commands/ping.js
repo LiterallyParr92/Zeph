@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -7,7 +7,25 @@ module.exports = {
     async execute(interaction, client) {
         const latency = Date.now() - interaction.createdTimestamp;
         const websocket = client.ws.ping;
-        await interaction.reply(`Pong! 🏓 Latencia: ${latency}ms. WebSocket: ${websocket}ms`);
+
+        // Determinar color según latencia
+        let color;
+        if (latency < 100) color = 0x00ff00; // verde
+        else if (latency < 200) color = 0xffff00; // amarillo
+        else color = 0xff0000; // rojo
+
+        // Crear embed
+        const pingEmbed = new EmbedBuilder()
+            .setTitle('🏓 Pong!')
+            .setColor(color)
+            .addFields(
+                { name: 'Latencia', value: `${latency}ms`, inline: true },
+                { name: 'WebSocket', value: `${websocket}ms`, inline: true }
+            )
+            .setTimestamp()
+            .setFooter({ text: `Comando ejecutado por ${interaction.user.tag}`, iconURL: interaction.user.displayAvatarURL() });
+
+        await interaction.reply({ embeds: [pingEmbed] });
     }
 };
 
