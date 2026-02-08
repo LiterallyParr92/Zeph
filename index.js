@@ -1,4 +1,9 @@
 require('./deploy-commands.js'); // Asegura que los comandos se desplieguen antes de iniciar el bot
+const mongoose = require("mongoose");
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("🧠 MongoDB conectado"))
+  .catch(err => console.log("Mongo error:", err));
 const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const fs = require("fs");
 const { setPresence } = require("./presence/setPresence");
