@@ -41,10 +41,28 @@ client.once("ready", () => {
 });
 
 // ======================
-// INTERACCIONES SLASH
+// INTERACCIONES
 // ======================
 
-client.on("interactionCreate", async (interaction) => {
+// En tu index.js o archivo principal
+client.on('interactionCreate', async (interaction) => {
+  // Manejar menú desplegable de help
+  if (interaction.isStringSelectMenu() && interaction.customId === 'help_menu') {
+    const helpCommand = require('./commands/help.js'); // Ajusta la ruta
+    return helpCommand.handleMenuInteraction(interaction);
+  }
+  
+  // Manejar botón de volver
+  if (interaction.isButton() && interaction.customId === 'help_back') {
+    const helpCommand = require('./commands/help.js'); // Ajusta la ruta
+    return helpCommand.handleBackButton(interaction);
+  }
+  
+  // Manejar botón de eliminar
+  if (interaction.isButton() && interaction.customId === 'delete_help_msg') {
+    const helpCommand = require('./commands/help.js'); // Ajusta la ruta
+    return helpCommand.handleDeleteButton(interaction);
+  }
   
   if (interaction.isButton() && interaction.customId === 'delete_help_msg') {
     await interaction.message.delete().catch(() => {});
