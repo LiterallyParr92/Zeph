@@ -88,17 +88,17 @@ module.exports.handleMenuInteraction = async (interaction) => {
   
   // Mapear nombres de categorías para mostrar
   const categoryNames = {
-    "fun": "🎊 Entretenimiento",
+    "artrade": "ArtTrade",
     "mod": "🔩 Moderación", 
     "utils": "🔎 Utilidad",
-    "music": "🎵 Música"
+    "comisions": "Comisiones"
   };
   
   const categoryColors = {
-    "fun": "#FF69B4", // Rosa
+    "artrade": "#FF69B4", // Rosa
     "mod": "#FF0000", // Rojo
     "utils": "#00FF00", // Verde
-    "music": "#9B59B6" // Púrpura
+    "comisions": "#9B59B6" // Púrpura
   };
   
   // Obtener los archivos de comandos de la categoría seleccionada
@@ -160,7 +160,7 @@ module.exports.handleBackButton = async (interaction) => {
   const embed = new EmbedBuilder()
     .setTitle("📖 | Menú de ayuda")
     .setColor("#2f3136")
-    .setDescription("Selecciona una categoría para ver sus comandos.\n\n🎊 | **Entretenimiento**\ncomandos de entretenimiento\n🔩 | **Moderación**\ncomandos de moderación\n🔎 | **Utilidad**\ncomandos útiles\n🎵 | **Música**\ncomandos musicales")
+    .setDescription("Selecciona una categoría para ver sus comandos.\n\n🎊 | **ArtTrade**\n\n🔩 | **Comisiones**\n\n🔎 | **Utilidad**\n\n| **Moderación**")
     .setTimestamp()
     .setFooter({ text: "Zeph • desarrollada por ♱ - Parra" });
   
@@ -169,24 +169,14 @@ module.exports.handleBackButton = async (interaction) => {
     .setPlaceholder("Selecciona una categoría")
     .addOptions([
       {
-        label: "🎊 Entretenimiento",
-        description: "Comandos de entretenimiento",
-        value: "fun",
+        label: "🎊 Comisiones",
+        description: "Comandos de comisiones",
+        value: "Comisiones",
       },
-      {
-        label: "🔩 Moderación",
-        description: "Comandos de moderación",
-        value: "mod",
-      },
-      {
-        label: "🔎 Utilidad",
-        description: "Comandos útiles",
-        value: "utils",
-      },
-      {
-        label: "🎵 Música",
-        description: "Comandos musicales",
-        value: "music",
+       {
+        label: "🎊 ArtTrade",
+        description: "Comandos de ArtTrade",
+        value: "ArtTrade",
       },
     ]);
   
