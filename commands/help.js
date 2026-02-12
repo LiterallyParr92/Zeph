@@ -38,25 +38,25 @@ module.exports = {
       .setPlaceholder("Selecciona una categoría")
       .addOptions([
         {
-          label: "ArtTrade",
-          description: "Comandos de ArtTrade",
-          value: "artrade",
-        },
-        {
-          label: "🔩 Moderación",
-          description: "Comandos de moderación",
-          value: "mod",
-        },
-        {
-          label: "🔎 Utilidad",
-          description: "Comandos útiles",
-          value: "utils",
-        },
-        {
-          label: "Comisiones",
-          description: "Comandos de comisiones",
-          value: "comisions",
-        },
+        label: "🎊 Entretenimiento",
+        description: "Comandos de entretenimiento",
+        value: "Entretenimiento",
+      },
+       {
+        label: "🔩 Moderación",
+        description: "Comandos de moderación",
+        value: "mod",
+      },
+      {
+        label: "🔎 Utilidad",
+        description: "Comandos de utilidad",
+        value: "utils",
+      },
+      {
+        label: "🎵 Música",
+        description: "Comandos de música",
+        value: "musica",
+      },
       ]);
 
     // 🔴 Botón rojo para eliminar
@@ -169,14 +169,24 @@ module.exports.handleBackButton = async (interaction) => {
     .setPlaceholder("Selecciona una categoría")
     .addOptions([
       {
-        label: "🎊 Comisiones",
-        description: "Comandos de comisiones",
-        value: "Comisiones",
+        label: "🎊 Entretenimiento",
+        description: "Comandos de entretenimiento",
+        value: "Entretenimiento",
       },
        {
-        label: "🎊 ArtTrade",
-        description: "Comandos de ArtTrade",
-        value: "ArtTrade",
+        label: "🔩 Moderación",
+        description: "Comandos de moderación",
+        value: "mod",
+      },
+      {
+        label: "🔎 Utilidad",
+        description: "Comandos de utilidad",
+        value: "utils",
+      },
+      {
+        label: "🎵 Música",
+        description: "Comandos de música",
+        value: "musica",
       },
     ]);
   
