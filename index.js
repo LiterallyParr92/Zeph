@@ -4,6 +4,8 @@ require("./deploy-commands.js");
 const mongoose = require("mongoose");
 const { Client, Collection, GatewayIntentBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const fs = require("fs");
+const path = require("path");
+const { Collection } = require("discord.js");
 
 // ======================
 // MONGODB
@@ -22,6 +24,57 @@ const client = new Client({
     GatewayIntentBits.MessageContent
   ]
 });
+
+// ================================
+// 🔥 COMMAND LOADER PRO
+// ================================
+
+client.commands = new Collection();
+client.categories = new Set();
+
+const commandsPath = path.join(__dirname, "commands");
+
+// leer carpetas
+const commandFolders = fs.readdirSync(commandsPath).filter(folder =>
+  fs.statSync(path.join(commandsPath, folder)).isDirectory()
+);
+
+for (const folder of commandFolders) {
+  const folderPath = path.join(commandsPath, folder);
+  const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith(".js"));
+
+  if (!commandFiles.length) {
+    console.log(`⚠️ Carpeta vacía ignorada: ${folder}`);
+    continue;
+  }
+
+  for (const file of commandFiles) {
+    const filePath = path.join(folderPath, file);
+
+    try {
+      const command = require(filePath);
+
+      if (!command?.data?.name) {
+        console.log(`⚠️ Ignorado (no slash command): ${folder}/${file}`);
+        continue;
+      }
+
+      command.category = command.category || folder;
+      client.categories.add(command.category);
+
+      client.commands.set(command.data.name, command);
+      console.log(`✅ [${folder.toUpperCase()}] ${command.data.name}`);
+
+    } catch (err) {
+      console.log(`❌ Error en ${folder}/${file}`);
+      console.error(err);
+    }
+  }
+}
+
+client.categories = [...client.categories];
+console.log(`📂 Categorías: ${client.categories.join(", ")}`);
+console.log(`🤖 Total comandos: ${client.commands.size}`);
 
 // ======================
 // COMANDOS
@@ -174,9 +227,9 @@ client.on("interactionCreate", async (interaction) => {
 // ======================
 // LOGIN
 // ======================
-if (!process.env.TOKEN) {
-  console.error("❌ TOKEN no encontrado");
-  process.exit(1);
-}
+client.once("ready", () => {
+  console.log(`✅ Bot conectado como ${client.user.tag}`);
+});
 
 client.login(process.env.TOKEN);
+
