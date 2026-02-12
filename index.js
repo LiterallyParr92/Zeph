@@ -1,81 +1,79 @@
 require("dotenv").config();
-require("./deploy-commands");
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
+} = require("discord.js");
+
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 
 // ======================
-// MONGODB
+// MONGO
 // ======================
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("🧠 MongoDB conectado"))
-  .catch(err => console.log("Mongo error:", err));
+  .catch(e => console.log("Mongo error:", e));
 
 // ======================
 // CLIENTE
 // ======================
 const client = new Client({
-  intents: [ 53608447 ] // Intents necesarios para comandos, interacciones y gestión de roles
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent
+  ]
 });
 
-// ================================
-// 🔥 LOADER  
-// ================================
-
+// ======================
+// LOADER
+// ======================
 client.commands = new Collection();
 client.categories = new Set();
 
 const commandsPath = path.join(__dirname, "commands");
 
-// leer carpetas
-const commandFolders = fs.readdirSync(commandsPath).filter(folder =>
-  fs.statSync(path.join(commandsPath, folder)).isDirectory()
-);
-
-for (const folder of commandFolders) {
+for (const folder of fs.readdirSync(commandsPath)) {
   const folderPath = path.join(commandsPath, folder);
-  const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith(".js"));
+  if (!fs.statSync(folderPath).isDirectory()) continue;
 
-  if (!commandFiles.length) {
-    console.log(`⚠️ Carpeta vacía ignorada: ${folder}`);
-    continue;
-  }
+  const files = fs.readdirSync(folderPath).filter(f => f.endsWith(".js"));
+  if (!files.length) continue;
 
-  for (const file of commandFiles) {
+  for (const file of files) {
     const filePath = path.join(folderPath, file);
-
     try {
       const command = require(filePath);
+      if (!command?.data?.name) continue;
 
-      if (!command?.data?.name) {
-        console.log(`⚠️ Ignorado (no slash command): ${folder}/${file}`);
-        continue;
-      }
-
-      command.category = command.category || folder;
-      client.categories.add(command.category);
+      command.category = folder;
+      client.categories.add(folder);
 
       client.commands.set(command.data.name, command);
-      console.log(`✅ [${folder.toUpperCase()}] ${command.data.name}`);
-
-    } catch (err) {
-      console.log(`❌ Error en ${folder}/${file}`);
-      console.error(err);
+      console.log(`✅ ${folder}/${command.data.name}`);
+    } catch (e) {
+      console.log(`❌ ${folder}/${file}`);
+      console.error(e);
     }
   }
 }
 
-client.categories = [...client.categories];
-console.log(`📂 Categorías: ${client.categories.join(", ")}`);
-console.log(`🤖 Total comandos: ${client.commands.size}`);
+console.log("📂 Categorías:", [...client.categories]);
+console.log("🤖 Comandos:", client.commands.size);
 
 // ======================
 // READY
 // ======================
 client.once("ready", () => {
   console.log(`✅ Bot conectado como ${client.user.tag}`);
-  console.log("📂 Categorías detectadas:", client.categories);
 });
 
 // ======================
@@ -86,99 +84,8 @@ const MOD_ROLES = ["Admin", "Moderator", "Owner"];
 // ======================
 // INTERACCIONES
 // ======================
-client.on("interactionCreate", async (interaction) => {
+client.on("interactionCreate", async interaction => {
 
-  // ======================
-  // HELP MENU SELECT
-  // ======================
-  if (interaction.isStringSelectMenu() && interaction.customId === "help_menu") {
-    const category = interaction.values[0];
-
-    let commands = client.commands.filter(c => c.category === category);
-
-    // 🔐 Filtrar comandos solo mods
-    const memberRoles = interaction.member.roles.cache.map(r => r.name);
-    const isMod = MOD_ROLES.some(r => memberRoles.includes(r));
-    commands = commands.filter(c => !c.modOnly || isMod);
-
-    if (!commands.size) {
-      return interaction.update({ content: "❌ No hay comandos en esta categoría.", components: [] });
-    }
-
-    // 📄 PAGINACIÓN
-    const chunkSize = 5;
-    const pages = [];
-    const cmdArray = commands.toJSON();
-
-    for (let i = 0; i < cmdArray.length; i += chunkSize) {
-      pages.push(cmdArray.slice(i, i + chunkSize));
-    }
-
-    let page = 0;
-
-    const buildEmbed = () =>
-      new EmbedBuilder()
-        .setTitle(`📂 ${category} | Página ${page + 1}/${pages.length}`)
-        .setColor("#2f3136")
-        .setDescription(
-          pages[page].map(c => `**/${c.data.name}** — ${c.data.description}`).join("\n")
-        );
-
-    client.helpState = { pages, page, category };
-
-    const row = new ActionRowBuilder().addComponents(
-      new ButtonBuilder().setCustomId("help_prev").setLabel("⬅").setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId("help_next").setLabel("➡").setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder().setCustomId("help_delete").setEmoji("🗑️").setStyle(ButtonStyle.Danger)
-    );
-
-    return interaction.update({ embeds: [buildEmbed()], components: [row] });
-  }
-
-  // ======================
-  // PAGINA SIGUIENTE
-  // ======================
-  if (interaction.isButton() && interaction.customId === "help_next") {
-    const state = client.helpState;
-    if (!state) return;
-
-    state.page = (state.page + 1) % state.pages.length;
-
-    const embed = new EmbedBuilder()
-      .setTitle(`📂 ${state.category} | Página ${state.page + 1}/${state.pages.length}`)
-      .setColor("#2f3136")
-      .setDescription(state.pages[state.page].map(c => `**/${c.data.name}** — ${c.data.description}`).join("\n"));
-
-    return interaction.update({ embeds: [embed] });
-  }
-
-  // ======================
-  // PAGINA ANTERIOR
-  // ======================
-  if (interaction.isButton() && interaction.customId === "help_prev") {
-    const state = client.helpState;
-    if (!state) return;
-
-    state.page = (state.page - 1 + state.pages.length) % state.pages.length;
-
-    const embed = new EmbedBuilder()
-      .setTitle(`📂 ${state.category} | Página ${state.page + 1}/${state.pages.length}`)
-      .setColor("#2f3136")
-      .setDescription(state.pages[state.page].map(c => `**/${c.data.name}** — ${c.data.description}`).join("\n"));
-
-    return interaction.update({ embeds: [embed] });
-  }
-
-  // ======================
-  // BORRAR HELP
-  // ======================
-  if (interaction.isButton() && interaction.customId === "help_delete") {
-    return interaction.message.delete().catch(() => {});
-  }
-
-  // ======================
-  // SLASH COMMANDS
-  // ======================
   if (!interaction.isChatInputCommand()) return;
 
   const command = client.commands.get(interaction.commandName);
@@ -186,21 +93,12 @@ client.on("interactionCreate", async (interaction) => {
 
   try {
     await command.execute(interaction, client);
-  } catch (err) {
-    console.error("❌ Error comando:", err);
-
-    if (!interaction.replied && !interaction.deferred) {
-      await interaction.reply({ content: "❌ Error ejecutando comando", ephemeral: true });
+  } catch (e) {
+    console.error(e);
+    if (!interaction.replied) {
+      interaction.reply({ content: "❌ Error", ephemeral: true });
     }
   }
 });
 
-// ======================
-// LOGIN
-// ======================
-client.once("ready", () => {
-  console.log(`✅ Bot conectado como ${client.user.tag}`);
-});
-
 client.login(process.env.TOKEN);
-
