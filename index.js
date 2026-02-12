@@ -13,6 +13,8 @@ const {
 const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
+const { setPresence } = require("./presence/setPresence");
+const helpCommand = require("./commands/help");
 
 // ======================
 // MONGO
@@ -86,19 +88,31 @@ const MOD_ROLES = ["Admin", "Moderator", "Owner"];
 // ======================
 client.on("interactionCreate", async interaction => {
 
-  if (!interaction.isChatInputCommand()) return;
+  // SLASH COMMANDS
+  if (interaction.isChatInputCommand()) {
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return;
 
-  const command = client.commands.get(interaction.commandName);
-  if (!command) return;
-
-  try {
-    await command.execute(interaction, client);
-  } catch (e) {
-    console.error(e);
-    if (!interaction.replied) {
-      interaction.reply({ content: "❌ Error", ephemeral: true });
+    try {
+      await command.execute(interaction, client);
+    } catch (e) {
+      console.error(e);
+      if (!interaction.replied) {
+        interaction.reply({ content: "❌ Error ejecutando comando", ephemeral: true });
+      }
     }
   }
+
+  // SELECT MENU DEL HELP
+  if (interaction.isStringSelectMenu()) {
+    return helpCommand.handleMenu(interaction, client);
+  }
+
+  // BOTONES DEL HELP
+  if (interaction.isButton()) {
+    return helpCommand.handleButtons(interaction, client);
+  }
+
 });
 
 client.login(process.env.TOKEN);
